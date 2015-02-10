@@ -1,20 +1,25 @@
 describe('Scope', function () {
   it('should work with IIFEs', function () {
+    s('d', 5);
+
     expect(g('a')).to.eql(undefined);
     expect(g('b')).to.eql(undefined);
     expect(g('c')).to.eql(undefined);
+    expect(g('d')).to.eql(5);
 
     f('outer', ['a', 'b'], function () {
 
       expect(g('a')).to.eql(1);
       expect(g('b')).to.eql(2);
       expect(g('c')).to.eql(undefined);
+      expect(g('d')).to.eql(5);
 
       f('inner', ['a', 'c'], function () {
 
         expect(g('a')).to.eql(3);
         expect(g('b')).to.eql(2);
         expect(g('c')).to.eql(4);
+        expect(g('d')).to.eql(5);
 
       });
 
@@ -23,6 +28,7 @@ describe('Scope', function () {
       expect(g('a')).to.eql(1);
       expect(g('b')).to.eql(2);
       expect(g('c')).to.eql(undefined);
+      expect(g('d')).to.eql(5);
 
     });
 
@@ -31,6 +37,7 @@ describe('Scope', function () {
     expect(g('a')).to.eql(undefined);
     expect(g('b')).to.eql(undefined);
     expect(g('c')).to.eql(undefined);
+    expect(g('d')).to.eql(5);
   });
 
   it('should remember scope when closure is invoked outside', function () {
