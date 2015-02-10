@@ -1,53 +1,82 @@
-var Scope = (function (global) {
-  function Scope() {
-    this._root = {};
-    this._closure = null;
-    this._scopes = {};
+var GlobalScope = (function (global) {
+  function GlobalScope() {
+    this._closure = { uniqueId: 'global' };
+    this._scopes = { global: new Scope(null) };
   };
 
-  Scope.prototype.current = function () {
-    if (this._closure == null) {
-      return this._root;
-    }
+  GlobalScope.prototype.scopeForCurrentClosure = function () {
     return this._scopes[this._closure.uniqueId];
   };
 
-  Scope.prototype.setCurrent = function (scope) {
+  GlobalScope.prototype.setScopeForCurrentClosure = function (scope) {
     this._scopes[this._closure.uniqueId] = scope;
   };
 
-  Scope.prototype.fork = function () {
-    var previousScope = this.current();
-    var F = function () {};
-    F.prototype = Object.create(previousScope);
-    F.prototype.constructor = F;
-    F.prototype.parent = previousScope;
-    return new F();
-  }
-
-  Scope.prototype.push = function (scope, func) {
+  GlobalScope.prototype.push = function (scope, func) {
     var previousClosure = this._closure;
-    var newScope = scope;
     this._closure = func;
-    this.setCurrent(newScope);
+    this.setScopeForCurrentClosure(scope);
     return previousClosure;
   };
 
-  Scope.prototype.pop = function (closure) {
-    // var parent = this.current().parent;
-    // if (!!parent) {
-    //   this.setCurrent(parent);
-    // }
-    // return !!parent;
+  GlobalScope.prototype.pop = function (closure) {
     this._closure = closure;
   };
 
+  GlobalScope.prototype.set = function (key, value) {
+    return this.scopeForCurrentClosure().set(key, value);
+  };
+
+  GlobalScope.prototype.get = function (key) {
+    return this.scopeForCurrentClosure().get(key);
+  };
+
+  GlobalScope.prototype.args = function (names, values) {
+    return this.scopeForCurrentClosure().args(names, values);
+  };
+
+  GlobalScope.prototype.func = function (name, args, body) {
+    var _this = this;
+    var previousScope = this.scopeForCurrentClosure();
+    var scope = previousScope.fork();
+    var f = function () {
+      var previousClosure = _this.push(scope, f);
+      _this.args(args, arguments);
+      var result = body.apply(this);
+      _this.pop(previousClosure);
+      return result;
+    }
+
+    this.set(name, f);
+  };
+
+  return GlobalScope;
+})(window);
+
+var Scope = (function (global) {
+  function Scope(object) {
+    this._scope = object || {};
+  };
+
+  Scope.prototype._forkScope = function () {
+    var scope = this._scope;
+    var F = function () {};
+    F.prototype = Object.create(scope);
+    F.prototype.constructor = F;
+    F.prototype.parent = scope;
+    return new F();
+  }
+
+  Scope.prototype.fork = function () {
+    return new Scope(this._forkScope());
+  };
+
   Scope.prototype.set = function (key, value) {
-    this.current()[key] = value;
+    this._scope[key] = value;
   };
 
   Scope.prototype.get = function (key) {
-    return this.current()[key];
+    return this._scope[key];
   };
 
   Scope.prototype.args = function (names, values) {
@@ -56,29 +85,13 @@ var Scope = (function (global) {
     }
   };
 
-  Scope.prototype.func = function (name, args, body) {
-    var _this = this;
-    var scope = this.fork()
-    var f = function () {
-      var s = _this.push(scope, f);
-      _this.args(args, arguments);
-      var r = body.apply(this);
-      _this.pop(s);
-      return r;
-    }
-
-    this.set(name, f);
-  }
-
   return Scope;
 })(window);
 
-var scope = new Scope();
-var push = function ()  { return scope.push() };
-var pop  = function ()  { return scope.pop() };
-var s = function (k, v) { return scope.set(k, v) };
-var g = function (k)    { return scope.get(k) };
-var f = function (n, a, b) { return scope.func(n, a, b) };
+var scope = new GlobalScope();
+var s = scope.set.bind(scope);
+var g = scope.get.bind(scope);
+var f = scope.func.bind(scope);
 
 // var outer = function (x, y) {
 //   var inner = function (x, z) {
@@ -88,13 +101,3 @@ var f = function (n, a, b) { return scope.func(n, a, b) };
 // };
 //
 // console.log(outer(1,2)(3,4));
-
-// f('outer', ['x', 'y'], function () {
-//   f('inner', ['x', 'z'], function () {
-//     return [g('x'), g('y'), g('z')];
-//   });
-//
-//   return g('inner');
-// });
-//
-// console.log(g('outer')(1,2)(3,4));
