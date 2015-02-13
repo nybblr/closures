@@ -63,12 +63,40 @@ var Scope = (function (global) {
     var F = function () {};
     F.prototype = Object.create(scope);
     F.prototype.constructor = F;
-    F.prototype.parent = scope;
+    F.prototype.__parent = this;
     return new F();
-  }
+  };
 
   Scope.prototype.fork = function () {
     return new Scope(this._forkScope());
+  };
+
+  Scope.prototype.parent = function () {
+    return this._scope.__parent;
+  };
+
+  Scope.prototype.locals = function () {
+    var locals = Object.keys(this._scope);
+
+    return locals;
+  };
+
+  Scope.prototype.localsObject = function () {
+    var locals = this.locals();
+    var count = locals.length;
+    var object = {};
+
+    for (var i = 0; i < count; i++) {
+      var local = locals[i];
+      object[local] = this.get(local);
+    }
+
+    return object;
+  };
+
+  Scope.prototype.print = function () {
+    var printer = new ScopePrinter(this);
+    return printer.print();
   };
 
   Scope.prototype.set = function (key, value) {
@@ -86,6 +114,34 @@ var Scope = (function (global) {
   };
 
   return Scope;
+})(window);
+
+var ScopePrinter = (function (global) {
+  function ScopePrinter(scope) {
+    this._scope = scope;
+  };
+
+  ScopePrinter.prototype.print = function () {
+    return this._print(this._scope);
+  };
+
+  ScopePrinter.prototype._print = function (scope) {
+    if (scope == null) {
+      return null;
+    }
+
+    var localsObject = scope.localsObject();
+
+    var parent = scope.parent();
+
+    if (parent != null) {
+      localsObject._parent = this._print(parent);
+    }
+
+    return localsObject;
+  };
+
+  return ScopePrinter;
 })(window);
 
 var scope = new GlobalScope();
