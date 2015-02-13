@@ -71,4 +71,17 @@ describe('ScopePrinter', function () {
 
     expect(print).to.deep.eql({a: 1, b: 2});
   });
+
+  it('should include parent scope', function () {
+    var parentScope = new Scope();
+    parentScope.set('c', 3);
+
+    var scope = parentScope.fork();
+    scope.set('a', 1);
+    scope.set('b', 2);
+
+    var print = scope.print();
+
+    expect(print).to.deep.eql({a: 1, b: 2, _parent: {c: 3}});
+  });
 });
