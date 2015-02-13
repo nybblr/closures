@@ -1,3 +1,5 @@
+var expect = chai.expect;
+
 describe('Scope', function () {
   it('should work with IIFEs', function () {
     s('d', 5);
@@ -56,5 +58,17 @@ describe('Scope', function () {
     expect(g('x')).to.eql(undefined);
     expect(g('y')).to.eql(undefined);
     expect(g('z')).to.eql(undefined);
+  });
+});
+
+describe('ScopePrinter', function () {
+  it('should include locals', function () {
+    var scope = new Scope();
+    scope.set('a', 1);
+    scope.set('b', 2);
+
+    var print = scope.print();
+
+    expect(print).to.deep.eql({a: 1, b: 2});
   });
 });
