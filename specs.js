@@ -61,15 +61,15 @@ describe('Scope', function () {
   });
 });
 
-describe('ScopePrinter', function () {
+describe('ScopeVisitor', function () {
   it('should include locals', function () {
     var scope = new Scope();
     scope.set('a', 1);
     scope.set('b', 2);
 
-    var print = scope.print();
+    var tree = scope.tree();
 
-    expect(print).to.deep.eql({a: 1, b: 2});
+    expect(tree).to.deep.eql({a: 1, b: 2});
   });
 
   it('should include parent scope', function () {
@@ -80,8 +80,8 @@ describe('ScopePrinter', function () {
     scope.set('a', 1);
     scope.set('b', 2);
 
-    var print = scope.print();
+    var tree = scope.tree();
 
-    expect(print).to.deep.eql({a: 1, b: 2, _parent: {c: 3}});
+    expect(tree).to.deep.eql({a: 1, b: 2, _parent: {c: 3}});
   });
 });

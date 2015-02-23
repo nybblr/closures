@@ -94,9 +94,9 @@ var Scope = (function (global) {
     return object;
   };
 
-  Scope.prototype.print = function () {
-    var printer = new ScopePrinter(this);
-    return printer.print();
+  Scope.prototype.tree = function () {
+    var visitor = new ScopeVisitor(this);
+    return visitor.tree();
   };
 
   Scope.prototype.set = function (key, value) {
@@ -116,16 +116,16 @@ var Scope = (function (global) {
   return Scope;
 })(window);
 
-var ScopePrinter = (function (global) {
-  function ScopePrinter(scope) {
+var ScopeVisitor = (function (global) {
+  function ScopeVisitor(scope) {
     this._scope = scope;
   }
 
-  ScopePrinter.prototype.print = function () {
-    return this._print(this._scope);
+  ScopeVisitor.prototype.tree = function () {
+    return this._tree(this._scope);
   };
 
-  ScopePrinter.prototype._print = function (scope) {
+  ScopeVisitor.prototype._tree = function (scope) {
     if (scope == null) {
       return null;
     }
@@ -135,13 +135,13 @@ var ScopePrinter = (function (global) {
     var parent = scope.parent();
 
     if (parent != null) {
-      localsObject._parent = this._print(parent);
+      localsObject._parent = this._tree(parent);
     }
 
     return localsObject;
   };
 
-  return ScopePrinter;
+  return ScopeVisitor;
 })(window);
 
 var scope = new GlobalScope();
