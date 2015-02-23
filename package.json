@@ -1,0 +1,15 @@
+{
+  "name": "usurp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "usurp.js",
+  "dependencies": {
+    "acorn": "~0.11.0",
+    "escodegen": "~1.6.1",
+    "estraverse": "^1.9.1"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "author": "",
+  "license": "ISC"
+}
