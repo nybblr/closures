@@ -2,7 +2,7 @@ var GlobalScope = (function (global) {
   function GlobalScope() {
     this._closure = { uniqueId: 'global' };
     this._scopes = { global: new Scope(null) };
-  };
+  }
 
   GlobalScope.prototype.scopeForCurrentClosure = function () {
     return this._scopes[this._closure.uniqueId];
@@ -45,7 +45,7 @@ var GlobalScope = (function (global) {
       var result = body.apply(this);
       _this.pop(previousClosure);
       return result;
-    }
+    };
 
     this.set(name, f);
   };
@@ -56,7 +56,7 @@ var GlobalScope = (function (global) {
 var Scope = (function (global) {
   function Scope(object) {
     this._scope = object || {};
-  };
+  }
 
   Scope.prototype._forkScope = function () {
     var scope = this._scope;
@@ -119,7 +119,7 @@ var Scope = (function (global) {
 var ScopePrinter = (function (global) {
   function ScopePrinter(scope) {
     this._scope = scope;
-  };
+  }
 
   ScopePrinter.prototype.print = function () {
     return this._print(this._scope);

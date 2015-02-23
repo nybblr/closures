@@ -1,7 +1,7 @@
 var Scope = (function (global) {
   function Scope() {
     this._scope = {};
-  };
+  }
 
   Scope.prototype.current = function () {
     return this._scope;
@@ -41,11 +41,11 @@ var Scope = (function (global) {
 })(window);
 
 var scope = new Scope();
-var args = function (a) { return scope.args(a) };
-var push = function ()  { return scope.push() };
-var pop  = function ()  { return scope.pop() };
-var s = function (k, v) { return scope.set(k, v) };
-var g = function (k)    { return scope.get(k) };
+var args = scope.args.bind(scope);
+var push = scope.push.bind(scope);
+var pop = scope.pop.bind(scope);
+var s = scope.set.bind(scope);
+var g = scope.get.bind(scope);
 
 // var outer = function (x, y) {
 //   var inner = function (x, z) {
