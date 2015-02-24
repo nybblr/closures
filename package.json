@@ -8,7 +8,9 @@
     "escodegen": "~1.6.1",
     "estraverse": "^1.9.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "browserify": "~9.0.3"
+  },
   "scripts": {},
   "author": "",
   "license": "ISC"
