@@ -144,10 +144,10 @@ var ScopeVisitor = (function (global) {
   return ScopeVisitor;
 })(window);
 
-var scope = new GlobalScope();
-var s = scope.set.bind(scope);
-var g = scope.get.bind(scope);
-var f = scope.func.bind(scope);
+// var scope = new GlobalScope();
+// var s = scope.set.bind(scope);
+// var g = scope.get.bind(scope);
+// var f = scope.func.bind(scope);
 
 // var outer = function (x, y) {
 //   var inner = function (x, z) {

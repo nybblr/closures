@@ -40,12 +40,12 @@ var Scope = (function (global) {
   return Scope;
 })(window);
 
-var scope = new Scope();
-var args = scope.args.bind(scope);
-var push = scope.push.bind(scope);
-var pop = scope.pop.bind(scope);
-var s = scope.set.bind(scope);
-var g = scope.get.bind(scope);
+// var scope = new Scope();
+// var args = scope.args.bind(scope);
+// var push = scope.push.bind(scope);
+// var pop = scope.pop.bind(scope);
+// var s = scope.set.bind(scope);
+// var g = scope.get.bind(scope);
 
 // var outer = function (x, y) {
 //   var inner = function (x, z) {
