@@ -6,7 +6,6 @@ describe('Scope', function () {
   describe.skip('for a context', function(){
     before(function(){
       scope = new Scope();
-      args = scope.args.bind(scope);
       push = scope.push.bind(scope);
       pop = scope.pop.bind(scope);
       s = scope.set.bind(scope);
