@@ -56,10 +56,10 @@ describe('Scope', function () {
 
   describe('for a closure', function(){
     before(function(){
-      scope = new GlobalScope();
-      s = scope.set.bind(scope);
-      g = scope.get.bind(scope);
-      f = scope.func.bind(scope);
+      registry = new ClosureRegistry();
+      s = registry.set.bind(registry);
+      g = registry.get.bind(registry);
+      f = registry.func.bind(registry);
     });
 
     it('should work with IIFEs', function () {
