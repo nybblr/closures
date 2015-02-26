@@ -9,7 +9,7 @@ var Scope = (function() {
 
   Scope.prototype.pop = function() {
     var parent = this._dict.__parent;
-    if (!!parent) {
+    if (parent) {
       this._dict = parent;
     }
     return !!parent;
