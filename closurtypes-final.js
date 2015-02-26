@@ -4,6 +4,11 @@ var ClosureRegistry = (function() {
     this._registry = { global: new Scope() };
   }
 
+  delegate(['get', 'set', 'args'], {
+    from: ClosureRegistry.prototype,
+    to: function() { return this.scopeForCurrentClosure(); }
+  });
+
   ClosureRegistry.prototype.scopeForCurrentClosure = function() {
     return this._registry[this._closure.uniqueId];
   };
@@ -22,18 +27,6 @@ var ClosureRegistry = (function() {
     var previousClosure = this._closure;
     this._closure = func;
     return previousClosure;
-  };
-
-  ClosureRegistry.prototype.get = function(key) {
-    return this.scopeForCurrentClosure().get(key);
-  };
-
-  ClosureRegistry.prototype.set = function(key, value) {
-    return this.scopeForCurrentClosure().set(key, value);
-  };
-
-  ClosureRegistry.prototype.args = function(names, values) {
-    return this.scopeForCurrentClosure().args(names, values);
   };
 
   ClosureRegistry.prototype.func = function(name, args, body) {
