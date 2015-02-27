@@ -1,7 +1,6 @@
 var ClosureRegistry = (function() {
   function ClosureRegistry() {
-    this._closure = { uniqueId: 'global' };
-    this._registry = { global: new Scope() };
+    this._registry = [new Scope()];
   }
 
   delegate(['get', 'set', 'args'], {
@@ -9,34 +8,23 @@ var ClosureRegistry = (function() {
     to: function() { return this.scopeForCurrentClosure(); }
   });
 
+  delegate(['push', 'pop'], {
+    from: ClosureRegistry.prototype,
+    to: function() { return this._registry; }
+  });
+
   ClosureRegistry.prototype.scopeForCurrentClosure = function() {
-    return this._registry[this._closure.uniqueId];
-  };
-
-  ClosureRegistry.prototype.setScopeForCurrentClosure = function(scope) {
-    this._registry[this._closure.uniqueId] = scope;
-  };
-
-  ClosureRegistry.prototype.push = function(func, scope) {
-    var previousClosure = this.pop(func);
-    this.setScopeForCurrentClosure(scope);
-    return previousClosure;
-  };
-
-  ClosureRegistry.prototype.pop = function(func) {
-    var previousClosure = this._closure;
-    this._closure = func;
-    return previousClosure;
+    return this._registry[this._registry.length - 1];
   };
 
   ClosureRegistry.prototype.func = function(name, args, body) {
     var _this = this;
     var scope = this.scopeForCurrentClosure().fork();
     this.set(name, function() {
-      var previousClosure = _this.push(body, scope);
+      _this.push(scope);
       _this.args(args, arguments);
       var result = body();
-      _this.pop(previousClosure);
+      _this.pop();
       return result;
     });
   };
