@@ -69,6 +69,25 @@ describe('Scope', function () {
     });
   });
 
+  describe.skip('for an argumentless closure', function(){
+    it('should remember variables outside the lexical scope', function(){
+      s('outer', function() {
+        push();
+        s('x',1);
+
+        s('inner', function() {
+          push();
+          return g('x');
+          pop();
+        });
+        return g('inner');
+        pop();
+      });
+
+      expect(g('outer')()()).to.eql(1);
+    });
+  });
+
   describe.skip('for a closure', function(){
     before(function(){
       registry = new ClosureRegistry();
