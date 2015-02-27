@@ -32,15 +32,13 @@ var ClosureRegistry = (function() {
   ClosureRegistry.prototype.func = function(name, args, body) {
     var _this = this;
     var scope = this.scopeForCurrentClosure().fork();
-    var f = function() {
-      var previousClosure = _this.push(f, scope);
+    this.set(name, function() {
+      var previousClosure = _this.push(body, scope);
       _this.args(args, arguments);
-      var result = body.apply(this);
+      var result = body();
       _this.pop(previousClosure);
       return result;
-    };
-
-    this.set(name, f);
+    });
   };
 
   return ClosureRegistry;
