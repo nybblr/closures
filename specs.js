@@ -3,6 +3,21 @@ var expect = chai.expect;
 var scope, args, push, pop, s, g, f;
 
 describe('Scope', function () {
+  describe.skip('for a global context', function(){
+    before(function(){
+      scope = new Scope();
+      s = scope.set.bind(scope);
+      g = scope.get.bind(scope);
+    });
+
+    it('should retrieve set variables', function(){
+      s('x',1);
+
+      expect(g('x')).to.eql(1);
+      expect(g('y')).to.eql(undefined);
+    });
+  });
+
   describe.skip('for a context', function(){
     before(function(){
       scope = new Scope();
@@ -54,7 +69,7 @@ describe('Scope', function () {
     });
   });
 
-  describe('for a closure', function(){
+  describe.skip('for a closure', function(){
     before(function(){
       registry = new ClosureRegistry();
       s = registry.set.bind(registry);
