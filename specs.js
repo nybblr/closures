@@ -67,9 +67,7 @@ describe('Scope', function () {
 
       expect(g('x')).to.eql(1);
     });
-  });
 
-  describe.skip('for an argumentless closure', function(){
     it('should remember variables outside the lexical scope', function(){
       s('outer', function() {
         push();
