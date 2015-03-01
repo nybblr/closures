@@ -138,7 +138,8 @@ describe('Scope', function () {
 
   describe.skip('for a closure', function(){
     before(function(){
-      registry = new ClosureRegistry();
+      registry = new Scope();
+      // registry = new ClosureRegistry();
       s = registry.set.bind(registry);
       g = registry.get.bind(registry);
       f = registry.func.bind(registry);
