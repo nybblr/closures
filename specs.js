@@ -86,12 +86,12 @@ describe('Scope', function () {
     });
   });
 
-  describe.skip('for a closure', function(){
+  describe.skip('for nested IIFEs', function(){
     before(function(){
-      registry = new ClosureRegistry();
-      s = registry.set.bind(registry);
-      g = registry.get.bind(registry);
-      f = registry.func.bind(registry);
+      scope = new Scope();
+      s = scope.set.bind(scope);
+      g = scope.get.bind(scope);
+      f = scope.func.bind(scope);
     });
 
     it('should work with IIFEs', function () {
@@ -133,6 +133,15 @@ describe('Scope', function () {
       expect(g('b')).to.eql(undefined);
       expect(g('c')).to.eql(undefined);
       expect(g('d')).to.eql(5);
+    });
+  });
+
+  describe.skip('for a closure', function(){
+    before(function(){
+      registry = new ClosureRegistry();
+      s = registry.set.bind(registry);
+      g = registry.get.bind(registry);
+      f = registry.func.bind(registry);
     });
 
     it('should remember scope when closure is invoked outside', function () {
