@@ -3,6 +3,21 @@ var expect = chai.expect;
 var scope, args, push, pop, s, g, f;
 
 describe('Scope', function () {
+  describe.skip('for a global context', function(){
+    before(function(){
+      scope = new Scope();
+      s = scope.set.bind(scope);
+      g = scope.get.bind(scope);
+    });
+
+    it('should retrieve set variables', function(){
+      s('x',1);
+
+      expect(g('x')).to.eql(1);
+      expect(g('y')).to.eql(undefined);
+    });
+  });
+
   describe.skip('for a context', function(){
     before(function(){
       scope = new Scope();
@@ -52,14 +67,31 @@ describe('Scope', function () {
 
       expect(g('x')).to.eql(1);
     });
+
+    it('should remember variables outside the lexical scope', function(){
+      s('outer', function() {
+        push();
+        s('x',1);
+
+        s('inner', function() {
+          push();
+          return g('x');
+          pop();
+        });
+        return g('inner');
+        pop();
+      });
+
+      expect(g('outer')()()).to.eql(1);
+    });
   });
 
-  describe('for a closure', function(){
+  describe.skip('for nested IIFEs', function(){
     before(function(){
-      registry = new ClosureRegistry();
-      s = registry.set.bind(registry);
-      g = registry.get.bind(registry);
-      f = registry.func.bind(registry);
+      scope = new Scope();
+      s = scope.set.bind(scope);
+      g = scope.get.bind(scope);
+      f = scope.func.bind(scope);
     });
 
     it('should work with IIFEs', function () {
@@ -102,6 +134,16 @@ describe('Scope', function () {
       expect(g('c')).to.eql(undefined);
       expect(g('d')).to.eql(5);
     });
+  });
+
+  describe.skip('for a closure', function(){
+    before(function(){
+      registry = new Scope();
+      // registry = new ClosureRegistry();
+      s = registry.set.bind(registry);
+      g = registry.get.bind(registry);
+      f = registry.func.bind(registry);
+    });
 
     it('should remember scope when closure is invoked outside', function () {
       f('outer', ['x', 'y'], function () {
@@ -120,30 +162,5 @@ describe('Scope', function () {
       expect(g('y')).to.eql(undefined);
       expect(g('z')).to.eql(undefined);
     });
-  });
-});
-
-describe('ScopeVisitor', function () {
-  it('should include locals', function () {
-    var scope = new Scope();
-    scope.set('a', 1);
-    scope.set('b', 2);
-
-    var tree = scope.tree();
-
-    expect(tree).to.deep.eql({a: 1, b: 2});
-  });
-
-  it('should include parent scope', function () {
-    var parentScope = new Scope();
-    parentScope.set('c', 3);
-
-    var scope = parentScope.fork();
-    scope.set('a', 1);
-    scope.set('b', 2);
-
-    var tree = scope.tree();
-
-    expect(tree).to.deep.eql({a: 1, b: 2, _parent: {c: 3}});
   });
 });

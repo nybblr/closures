@@ -8,11 +8,7 @@ var Scope = (function() {
   };
 
   Scope.prototype.pop = function() {
-    var parent = this._dict.__parent;
-    if (!!parent) {
-      this._dict = parent;
-    }
-    return !!parent;
+    this._dict = this._dict.__parent;
   };
 
   Scope.prototype._forkDict = function() {
