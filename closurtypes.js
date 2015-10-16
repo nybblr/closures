@@ -39,10 +39,9 @@ var Scope = (function() {
 
   Scope.prototype._forkDict = function() {
     var dict = this._dict;
-    var F = function() {};
-    F.prototype = Object.create(dict);
-    F.prototype.constructor = F;
-    return new F();
+    var newDict = Object.create(dict);
+    newDict.__parent = dict;
+    return newDict;
   };
 
   Scope.prototype.fork = function() {
@@ -58,7 +57,7 @@ var Scope = (function() {
   };
 
   Scope.prototype.args = function(names, values) {
-    for (var i = 0, l = names.length; i < l; i ++) {
+    for (var i = 0, l = names.length; i < l; i++) {
       this.set(names[i], values[i]);
     }
   };
